@@ -69,7 +69,6 @@ const Weather = () => {
   const [open, setOpen] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
-  console.log(selectedCity)
   const [focusedIndex, setFocusedIndex] = useState(0);
 
   const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
