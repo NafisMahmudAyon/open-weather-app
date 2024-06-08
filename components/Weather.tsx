@@ -70,7 +70,7 @@ const Weather = () => {
   const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
 
   const apiKey = process.env.WEATHER_API_KEY;
-  console.log(apiKey);
+  // console.log(apiKey);
   // const apiKey = 'fc3a7ec419e13cbd0d81899ef1e0e72c';
 
   useEffect(() => {
