@@ -85,7 +85,7 @@ const Weather = () => {
   };
 
   const fetchCityData = async () => {
-    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`);
+    const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`);
     const data: CityData[] = await response.json();
     setCityData(data);
     if (data.length > 0) {
