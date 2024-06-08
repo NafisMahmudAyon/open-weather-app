@@ -1,12 +1,13 @@
 'use client';
 
-import { Block, Text, Icon, Input } from 'landing-page-ui';
+import { Block, Text, Input } from 'landing-page-ui';
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import 'chart.js/auto';
-import CurrentDate from './CurrentDate';
-import Location from './Location';
-import SunRiseSunSet from './SunRiseSunSet';
+import CurrentDate from '../CurrentDate';
+import Location from '../Location';
+import SunRiseSunSet from '../SunRiseSunSet';
+import WeatherCard from './WeatherCard';
+import TemperatureChart from './TemperatureChart';
+import WeatherDetails from './WeatherDetails';
 
 interface CityData {
   name: string;
@@ -69,7 +70,6 @@ const Weather = () => {
   const [open, setOpen] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
-  console.log(selectedCity)
   const [focusedIndex, setFocusedIndex] = useState(0);
 
   const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
@@ -116,7 +116,6 @@ const Weather = () => {
     } else if (e.key === 'Enter') {
       handleCitySelect(cityData[focusedIndex]);
       setOpen(false);
-
     }
   };
 
@@ -151,52 +150,11 @@ const Weather = () => {
         <Block tagName="div">
           <Block tagName="div" styles="flex items-center flex-col gap-3">
             <CurrentDate />
-            {selectedCity && <Location location={selectedCity.name} />}
+            <Location location={weatherData.name} />
             <SunRiseSunSet sunRise={new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString()} sunSet={new Date(weatherData.sys.sunset * 1000).toLocaleTimeString()} />
-            <Block tagName="div" styles="flex items-center justify-center gap-3">
-              <Icon icon='fa-temperature-full' iconLibrary='font-awesome' styles='h-10 w-10 flex items-center justify-center border border-gray-500/40 rounded-full drop-shadow-lg shadow-xl hover:shadow-none hover:drop-shadow-none hover:border-gray-500/80 transition-all duration-300 ease-in-out text-xl' title="Temperature" />
-              <Text tagName="p" styles="text-lg">{weatherData.main.temp}°C</Text>
-            </Block>
-            <Block tagName="div" styles="flex justify-center gap-3 mt-6 ">
-              {/* Humidity */}
-              <Block tagName="div" styles="flex flex-col items-center text-center gap-2">
-                <Icon icon="fa-tint" iconLibrary="font-awesome" styles="h-10 w-10 flex items-center justify-center border border-gray-500/40 rounded-full drop-shadow-lg shadow-xl hover:shadow-none hover:drop-shadow-none hover:border-gray-500/80 transition-all duration-300 ease-in-out text-xl" />
-                <Text tagName="p">{weatherData.main.humidity}%</Text>
-              </Block>
-              {/* Wind */}
-              <Block tagName="div" styles="flex flex-col items-center text-center gap-2">
-                <Icon icon="fa-wind" iconLibrary="font-awesome" styles="h-10 w-10 flex items-center justify-center border border-gray-500/40 rounded-full drop-shadow-lg shadow-xl hover:shadow-none hover:drop-shadow-none hover:border-gray-500/80 transition-all duration-300 ease-in-out text-xl" />
-                <Text tagName="p" styles='flex flex-col items-center'><span>{weatherData.wind.speed} m/s</span> <span>at {weatherData.wind.deg}°</span></Text>
-              </Block>
-              {/* Pressure */}
-              <Block tagName="div" styles="flex flex-col items-center text-center gap-2">
-                <Icon icon="fa-eye" iconLibrary="font-awesome" styles="h-10 w-10 flex items-center justify-center border border-gray-500/40 rounded-full drop-shadow-lg shadow-xl hover:shadow-none hover:drop-shadow-none hover:border-gray-500/80 transition-all duration-300 ease-in-out text-xl" />
-                <Text tagName="p">{weatherData.visibility} m</Text>
-              </Block>
-              {/* Rain */}
-              {weatherData.rain && (
-                <Block tagName="div" styles="flex flex-col items-center text-center gap-2">
-                  <Icon icon="fa-cloud-rain" iconLibrary="font-awesome" styles="h-10 w-10 flex items-center justify-center border border-gray-500/40 rounded-full drop-shadow-lg shadow-xl hover:shadow-none hover:drop-shadow-none hover:border-gray-500/80 transition-all duration-300 ease-in-out text-xl" />
-                  <Text tagName="p">{weatherData.rain['1h']} mm</Text>
-                </Block>
-              )}
-            </Block>
-          </Block>
-          <Block tagName="div" styles="mx-auto py-[10px]">
-            <Line
-              data={{
-                labels: ['Temp', 'Feels Like', 'Min Temp', 'Max Temp'],
-                datasets: [
-                  {
-                    label: 'Temperature (°C)',
-                    data: [weatherData.main.temp, weatherData.main.feels_like, weatherData.main.temp_min, weatherData.main.temp_max],
-                    fill: true,
-                    backgroundColor: 'rgba(75,192,192,0.2)',
-                    borderColor: 'rgba(75,192,192,1)',
-                  },
-                ],
-              }}
-            />
+            <WeatherCard icon='fa-temperature-full' value={`${weatherData.main.temp}°C`} label="Temperature" />
+            {/* <TemperatureChart data={{ temp: weatherData.main.temp, feelsLike: weatherData.main.feels_like, tempMin: weatherData.main.temp_min, tempMax: weatherData.main.temp_max }} /> */}
+            <WeatherDetails humidity={weatherData.main.humidity} windSpeed={weatherData.wind.speed} windDeg={weatherData.wind.deg} visibility={weatherData.visibility} rain={weatherData.rain?.['1h']} />
           </Block>
         </Block>
       ) : (
